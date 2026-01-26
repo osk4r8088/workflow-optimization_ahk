@@ -1,4 +1,6 @@
-﻿#NoEnv
+; This script pastes a predefined string on keybind press, usefull if you need the same preset / whatever string again and again
+
+#NoEnv
 #SingleInstance Force
 SetWorkingDir %A_ScriptDir%
 ; =========================
@@ -54,3 +56,4 @@ PasteText(msg) {
 ; Mouse (optional): LButton RButton MButton XButton1 XButton2
 ; Browser: Browser_Back Browser_Forward Browser_Refresh Browser_Stop Browser_Search Browser_Favorites Browser_Home
 ; Media/Volume: Volume_Mute Volume_Down Volume_Up Media_Next Media_Prev Media_Play_Pause Media_Stop
+
