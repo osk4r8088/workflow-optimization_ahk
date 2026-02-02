@@ -201,4 +201,4 @@ These workarounds are already applied. The script is fully compatible with both 
 
 ## License
 
-MIT (= Do whatever you want with it, just credit the author when republishing or making additions)
+MIT (= Do whatever you want with it, just credit me when republishing or making additions)
