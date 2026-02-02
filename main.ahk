@@ -19,6 +19,8 @@ global g_Modules := Map(
     "stringpaste", { on: false }
 )
 
+global g_ModMenu := Menu()
+
 InitAll()
 
 InitAll() {
@@ -64,25 +66,27 @@ Module_SetEnabled(name, enable) {
 }
 
 TraySetup() {
-    global g_Modules, CFG_PATH
+    global g_Modules, CFG_PATH, g_ModMenu
 
     A_TrayMenu.Delete()
 
-    modMenu := Menu()
-    modMenu.Add("AutoClick",   (*) => Module_SetEnabled("autoclick",   !g_Modules["autoclick"].on))
-    modMenu.Add("MultiTask",   (*) => Module_SetEnabled("multitask",   !g_Modules["multitask"].on))
-    modMenu.Add("CopyPaste",   (*) => Module_SetEnabled("copypaste",   !g_Modules["copypaste"].on))
-    modMenu.Add("StringPaste", (*) => Module_SetEnabled("stringpaste", !g_Modules["stringpaste"].on))
+    ; rebuild the submenu (global, so it cannot disappear)
+    g_ModMenu.Delete()
+    g_ModMenu.Add("AutoClick",   (*) => Module_SetEnabled("autoclick",   !g_Modules["autoclick"].on))
+    g_ModMenu.Add("MultiTask",   (*) => Module_SetEnabled("multitask",   !g_Modules["multitask"].on))
+    g_ModMenu.Add("CopyPaste",   (*) => Module_SetEnabled("copypaste",   !g_Modules["copypaste"].on))
+    g_ModMenu.Add("StringPaste", (*) => Module_SetEnabled("stringpaste", !g_Modules["stringpaste"].on))
 
-    if (g_Modules["autoclick"].on)   modMenu.Check("AutoClick")
-    if (g_Modules["multitask"].on)   modMenu.Check("MultiTask")
-    if (g_Modules["copypaste"].on)   modMenu.Check("CopyPaste")
-    if (g_Modules["stringpaste"].on) modMenu.Check("StringPaste")
+    if (g_Modules["autoclick"].on)   g_ModMenu.Check("AutoClick")
+    if (g_Modules["multitask"].on)   g_ModMenu.Check("MultiTask")
+    if (g_Modules["copypaste"].on)   g_ModMenu.Check("CopyPaste")
+    if (g_Modules["stringpaste"].on) g_ModMenu.Check("StringPaste")
 
-    A_TrayMenu.Add("Modules", modMenu)
+    A_TrayMenu.Add("Modules", g_ModMenu)
     A_TrayMenu.Add()
 
     A_TrayMenu.Add("Open config.ini", (*) => Run('notepad.exe "' CFG_PATH '"'))
     A_TrayMenu.Add("Reload", (*) => Reload())
     A_TrayMenu.Add("Exit", (*) => ExitApp())
 }
+
