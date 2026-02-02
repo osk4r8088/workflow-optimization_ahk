@@ -4,7 +4,7 @@ A modular workflow automation toolkit for Windows built with AutoHotkey v2. Each
 
 ## Requirements
 
-- **AutoHotkey v2.0+** — works with both the [Microsoft Store edition]([https://apps.microsoft.com/detail/autohotkey-v2](https://apps.microsoft.com/detail/9plqfdg8hh9d) and the [standard installer](https://www.autohotkey.com/)
+- **AutoHotkey v2.0+** — works with both the [Microsoft Store edition](https://apps.microsoft.com/detail/9plqfdg8hh9d) and the [standard installer](https://www.autohotkey.com/)
 
 ## Quick Start
 
