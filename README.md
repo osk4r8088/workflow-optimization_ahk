@@ -12,6 +12,8 @@ A modular workflow automation toolkit for Windows built with AutoHotkey v2. Each
 2. Double-click `main.ahk`
 3. Right-click the tray icon → **Modules** to enable/disable features
 
+test.ahk can be ignored or used for testing Autohotkey availability and functionality.
+
 ## Modules & Keybinds
 
 ### CopyPaste
