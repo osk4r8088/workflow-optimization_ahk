@@ -1,6 +1,14 @@
 #Requires AutoHotkey v2.0
 
+global g_MultiTaskHK := []
+global g_MultiTaskInited := false
+
 MultiTask_Init(cfgPath) {
+    global g_MultiTaskHK, g_MultiTaskInited
+    if (g_MultiTaskInited)
+        return
+    g_MultiTaskInited := true
+
     ; hotkeys
     hkPlain := IniRead(cfgPath, "MultiTask", "PlainPaste", "^+v")
     hkDT    := IniRead(cfgPath, "MultiTask", "DateTime",   "NumpadMult")
@@ -16,14 +24,36 @@ MultiTask_Init(cfgPath) {
     pTeams  := IniRead(cfgPath, "MultiTask.Paths", "teams",     "")
     pOutl   := IniRead(cfgPath, "MultiTask.Paths", "outlook",   "")
 
-    Hotkey hkPlain, (*) => MultiTask_PlainPaste()
-    Hotkey hkDT,    (*) => SendText(FormatTime(, "dd.MM.yyyy HH:mm"))
-    Hotkey hkFS,    (*) => SendText(FormatTime(, "yyyy-MM-dd_HHmm"))
+    ; Register hotkeys OFF initially (module toggles will enable)
+    MultiTask_RegisterHotkey(hkPlain, (*) => MultiTask_PlainPaste())
+    MultiTask_RegisterHotkey(hkDT,    (*) => SendText(FormatTime(, "dd.MM.yyyy HH:mm")))
+    MultiTask_RegisterHotkey(hkFS,    (*) => SendText(FormatTime(, "yyyy-MM-dd_HHmm")))
 
-    Hotkey hkEdge,  (*) => MultiTask_Launch(pEdge,  "msedge.exe")
-    Hotkey hkNpp,   (*) => MultiTask_Launch(pNpp,   "notepad.exe")
-    Hotkey hkTeams, (*) => MultiTask_Launch(pTeams, "teams.exe")
-    Hotkey hkOutl,  (*) => MultiTask_Launch(pOutl,  "outlook.exe")
+    MultiTask_RegisterHotkey(hkEdge,  (*) => MultiTask_Launch(pEdge,  "msedge.exe"))
+    MultiTask_RegisterHotkey(hkNpp,   (*) => MultiTask_Launch(pNpp,   "notepad.exe"))
+    MultiTask_RegisterHotkey(hkTeams, (*) => MultiTask_Launch(pTeams, "teams.exe"))
+    MultiTask_RegisterHotkey(hkOutl,  (*) => MultiTask_Launch(pOutl,  "outlook.exe"))
+}
+
+MultiTask_RegisterHotkey(hk, fn) {
+    global g_MultiTaskHK
+    hk := Trim(hk)
+    if (hk = "")
+        return
+    try {
+        Hotkey hk, fn, "Off"
+        g_MultiTaskHK.Push(hk)
+    } catch as e {
+        TrayTip "MultiTask: failed to bind " hk
+    }
+}
+
+MultiTask_SetEnabled(enable) {
+    global g_MultiTaskHK
+    state := enable ? "On" : "Off"
+    for hk in g_MultiTaskHK {
+        try Hotkey hk, state
+    }
 }
 
 MultiTask_PlainPaste() {
