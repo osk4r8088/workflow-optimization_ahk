@@ -30,13 +30,13 @@ InitAll() {
         ExitApp
     }
 
-    ; init modules (they should register hotkeys Off initially)
-    TryCall("AutoClick_Init", CFG_PATH)
-    TryCall("MultiTask_Init", CFG_PATH)
-    TryCall("CopyPaste_Init", CFG_PATH)
-    TryCall("StringPaste_Init", CFG_PATH)
+    ; init modules (register hotkeys OFF in each module)
+    SafeCall0("AutoClick_Init", CFG_PATH)
+    SafeCall0("MultiTask_Init", CFG_PATH)
+    SafeCall0("CopyPaste_Init", CFG_PATH)
+    SafeCall0("StringPaste_Init", CFG_PATH)
 
-    ; read enabled flags (autoclick default OFF)
+    ; apply enabled flags
     Module_SetEnabled("autoclick",   IniRead(CFG_PATH, "Modules", "autoclick", "0") = "1")
     Module_SetEnabled("multitask",   IniRead(CFG_PATH, "Modules", "multitask", "1") = "1")
     Module_SetEnabled("copypaste",   IniRead(CFG_PATH, "Modules", "copypaste", "1") = "1")
@@ -45,41 +45,33 @@ InitAll() {
     TraySetup()
 }
 
-TryCall(fnName, param := "") {
-    ; Calls a function if it exists; never crashes the whole script.
-    try {
-        f := Func(fnName)
-        if (param = "")
-            f.Call()
-        else
-            f.Call(param)
-    } catch {
-        ; ignore missing or failing module init
-    }
+; call fnName(param) if it exists; ignore errors
+SafeCall0(fnName, param) {
+    try Func(fnName).Call(param)
+    catch
+        return
+}
+
+; call fnName(bool) if it exists; ignore errors
+SafeCall1(fnName, param) {
+    try Func(fnName).Call(param)
+    catch
+        return
 }
 
 Module_SetEnabled(name, enable) {
     global g_Modules, CFG_PATH
     g_Modules[name] := !!enable
 
-    ; call module toggle hooks only if they exist
     switch name {
-        case "autoclick":   TryCall("AutoClick_SetEnabled", enable)
-        case "multitask":   TryCall("MultiTask_SetEnabled", enable)
-        case "copypaste":   TryCall("CopyPaste_SetEnabled", enable)
-        case "stringpaste": TryCall("StringPaste_SetEnabled", enable)
+        case "autoclick":   SafeCall1("AutoClick_SetEnabled", enable)
+        case "multitask":   SafeCall1("MultiTask_SetEnabled", enable)
+        case "copypaste":   SafeCall1("CopyPaste_SetEnabled", enable)
+        case "stringpaste": SafeCall1("StringPaste_SetEnabled", enable)
     }
 
     IniWrite(enable ? "1" : "0", CFG_PATH, "Modules", name)
     TraySetup()
-}
-
-TryCall(fnName, param) {
-    try {
-        Func(fnName).Call(param)
-    } catch {
-        ; ignore
-    }
 }
 
 TraySetup() {
@@ -87,9 +79,10 @@ TraySetup() {
 
     A_TrayMenu.Delete()
 
-    ; Debug proves you're running the correct file
+    ; debug proof (optional but useful)
     A_TrayMenu.Add("Debug: show script path", (*) => MsgBox(A_ScriptFullPath))
 
+    ; rebuild submenu (keep global reference)
     g_ModMenu.Delete()
     g_ModMenu.Add("AutoClick",   (*) => Module_SetEnabled("autoclick",   !g_Modules["autoclick"]))
     g_ModMenu.Add("MultiTask",   (*) => Module_SetEnabled("multitask",   !g_Modules["multitask"]))
