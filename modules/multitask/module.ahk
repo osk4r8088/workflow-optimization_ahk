@@ -83,13 +83,13 @@ MultiTask_Launch(path, fallbackExe) {
 
 MultiTask_LaunchTeams(path := "") {
     ; If explicit path exists, use it
-    try {
-        if (path != "" && FileExist(path)) {
+    if (path != "" && FileExist(path)) {
+        try {
             Run('"' path '"')
             return
+        } catch {
+            ; fall through
         }
-    } catch {
-        ; continue
     }
 
     ; Try Microsoft Store / New Teams URIs
@@ -102,8 +102,13 @@ MultiTask_LaunchTeams(path := "") {
         }
     }
 
-    ; Last fallback
-    try Run("teams.exe")
-    catch TrayTip "Teams launch failed (Store app not found)"
+    ; Last fallback (classic Teams)
+    try {
+        Run("teams.exe")
+        return
+    } catch {
+        TrayTip "Teams launch failed (Store app not found)"
+    }
 }
+
 
