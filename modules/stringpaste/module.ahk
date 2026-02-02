@@ -1,21 +1,14 @@
-#Requires AutoHotkey v2.0
+global g_StringPasteHK := ""
 
 StringPaste_Init(cfgPath) {
+    global g_StringPasteHK
     text := IniRead(cfgPath, "StringPaste", "Text", "paste")
-    hk   := IniRead(cfgPath, "StringPaste", "Hotkey", "NumpadAdd")
-
-    Hotkey hk, (*) => StringPaste_Do(text), "On"
+    hk   := IniRead(cfgPath, "StringPaste", "Hotkey", "^!p")
+    g_StringPasteHK := hk
+    Hotkey hk, (*) => StringPaste_Do(text), "Off"
 }
 
-StringPaste_Do(text) {
-    saved := ClipboardAll()
-    try {
-        A_Clipboard := ""
-        A_Clipboard := text
-        ClipWait 0.5
-        Send "^v"
-        Sleep 30
-    } finally {
-        A_Clipboard := saved
-    }
+StringPaste_SetEnabled(enable) {
+    global g_StringPasteHK
+    Hotkey g_StringPasteHK, enable ? "On" : "Off"
 }
