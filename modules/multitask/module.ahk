@@ -31,7 +31,7 @@ MultiTask_Init(cfgPath) {
 
     MultiTask_RegisterHotkey(hkEdge,  (*) => MultiTask_Launch(pEdge,  "msedge.exe"))
     MultiTask_RegisterHotkey(hkNpp,   (*) => MultiTask_Launch(pNpp,   "notepad.exe"))
-    MultiTask_RegisterHotkey(hkTeams, (*) => MultiTask_Launch(pTeams, "teams.exe"))
+    MultiTask_RegisterHotkey(hkTeams, (*) => MultiTask_LaunchTeams(pTeams))
     MultiTask_RegisterHotkey(hkOutl,  (*) => MultiTask_Launch(pOutl,  "outlook.exe"))
 }
 
@@ -80,3 +80,30 @@ MultiTask_Launch(path, fallbackExe) {
         TrayTip "Launch failed: " (path != "" ? path : fallbackExe)
     }
 }
+
+MultiTask_LaunchTeams(path := "") {
+    ; If explicit path exists, use it
+    try {
+        if (path != "" && FileExist(path)) {
+            Run('"' path '"')
+            return
+        }
+    } catch {
+        ; continue
+    }
+
+    ; Try Microsoft Store / New Teams URIs
+    for uri in ["msteams:", "ms-teams:", "teams:"] {
+        try {
+            Run(uri)
+            return
+        } catch {
+            ; try next
+        }
+    }
+
+    ; Last fallback
+    try Run("teams.exe")
+    catch TrayTip "Teams launch failed (Store app not found)"
+}
+
