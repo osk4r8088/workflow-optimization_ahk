@@ -5,7 +5,7 @@ global g_MultiTaskInited := false
 
 MultiTask_Init(cfgPath) {
     global g_MultiTaskHK, g_MultiTaskInited
-    if (g_MultiTaskInited)
+    if g_MultiTaskInited
         return
     g_MultiTaskInited := true
 
@@ -24,11 +24,10 @@ MultiTask_Init(cfgPath) {
     pTeams  := IniRead(cfgPath, "MultiTask.Paths", "teams",     "")
     pOutl   := IniRead(cfgPath, "MultiTask.Paths", "outlook",   "")
 
-    ; Register hotkeys OFF initially (module toggles will enable)
+    ; register hotkeys OFF initially
     MultiTask_RegisterHotkey(hkPlain, (*) => MultiTask_PlainPaste())
     MultiTask_RegisterHotkey(hkDT,    (*) => SendText(FormatTime(, "dd.MM.yyyy HH:mm")))
     MultiTask_RegisterHotkey(hkFS,    (*) => SendText(FormatTime(, "yyyy-MM-dd_HHmm")))
-
     MultiTask_RegisterHotkey(hkEdge,  (*) => MultiTask_Launch(pEdge,  "msedge.exe"))
     MultiTask_RegisterHotkey(hkNpp,   (*) => MultiTask_Launch(pNpp,   "notepad.exe"))
     MultiTask_RegisterHotkey(hkTeams, (*) => MultiTask_LaunchTeams(pTeams))
@@ -82,27 +81,20 @@ MultiTask_Launch(path, fallbackExe) {
 }
 
 MultiTask_LaunchTeams(path := "") {
-    ; If explicit path exists, use it
     if (path != "" && FileExist(path)) {
         try {
             Run('"' path '"')
             return
-        } catch {
-            ; fall through
         }
     }
 
-    ; Try Microsoft Store / New Teams URIs
     for uri in ["msteams:", "ms-teams:", "teams:"] {
         try {
             Run(uri)
             return
-        } catch {
-            ; try next
         }
     }
 
-    ; Last fallback (classic Teams)
     try {
         Run("teams.exe")
         return
@@ -110,5 +102,3 @@ MultiTask_LaunchTeams(path := "") {
         TrayTip "Teams launch failed (Store app not found)"
     }
 }
-
-

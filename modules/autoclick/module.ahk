@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 
-global g_AutoClick := { delay:30, button:"Left" }
+global g_AutoClick := { delay: 30, button: "Left" }
 
 AutoClick_Init(cfgPath) {
     global g_AutoClick

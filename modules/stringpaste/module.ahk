@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 
-global g_StringPaste := { hk:"", text:"" }
+global g_StringPaste := { hk: "", text: "" }
 
 StringPaste_Init(cfgPath) {
     global g_StringPaste
