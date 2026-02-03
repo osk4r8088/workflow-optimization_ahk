@@ -190,8 +190,8 @@ workflowahk/
 
 ## Known Issues & Store Edition Compatibility
 
-This project was developed and tested with the **AutoHotkey v2 Microsoft Store edition**, which has quirks compared to the standard installer
-I ran into multiple stability issues related to the fuckass microsoft store version. Thats why the following fixes workarounds are vibecoded by claude.
+This project was developed and tested with the fuckass **AutoHotkey v2 Microsoft Store edition**, which has so many weird "quirks" compared to the standard installer.
+That I ran into multiple stability issues so sevear that the following fixes / workarounds got vibecoded using Claude:
 
 - **`A_TrayMenu.Delete()` crashes the Store edition** — the tray menu is built once at startup instead of being rebuilt on each toggle. Checkmarks are updated in place.
 - **`Persistent` directive is required** — without it the script exits immediately since hotkeys start in the "Off" state and don't keep the script alive on their own
