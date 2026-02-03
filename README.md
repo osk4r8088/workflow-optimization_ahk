@@ -1,5 +1,4 @@
-# workflow-optimization_ahk
-
+# MACROHUB-OS AHK Multiscript
 A modular workflow automation toolkit for Windows built with AutoHotkey v2. Each module can be toggled on/off from the system tray and all settings are persisted in `config.ini`.
 
 ## Requirements
